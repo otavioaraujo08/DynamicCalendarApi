@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserInfosDto } from './dto/update-user-infos.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { User } from './schema/user.schema';
 
 @ApiTags('auth')
@@ -53,7 +54,7 @@ export class AuthController {
     status: 400,
     description: 'User already exists',
   })
-  @Post('create')
+  @Post('create-user')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     try {
       if (!createUserDto.username || !createUserDto.password) {
@@ -81,7 +82,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiBody({ type: UpdateUserInfosDto })
-  @Put('update-infos/:id')
+  @Put('update-user-infos/:id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserInfosDto,
@@ -100,6 +101,40 @@ export class AuthController {
       const errorStatus =
         (error as { status?: number })?.status ||
         HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new HttpException(errorMessage, errorStatus);
+    }
+  }
+
+  @ApiOperation({ summary: 'Update user password' })
+  @ApiResponse({ status: 200, description: 'Password updated successfully.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiBody({ type: UpdateUserPasswordDto })
+  @Put('update-user-password/:id')
+  async updatePassword(
+    @Param('id') id: string,
+    @Body() updatePasswordDto: UpdateUserPasswordDto,
+  ) {
+    if (!id) {
+      throw new HttpException('User ID is required', HttpStatus.BAD_REQUEST);
+    }
+
+    const { oldPassword, newPassword } = updatePasswordDto;
+    if (!oldPassword || !newPassword) {
+      throw new HttpException(
+        'Old password and new password are required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    try {
+      return await this.authService.updateUserPassword(id, updatePasswordDto);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus =
+        (error as { status?: number })?.status ||
+        HttpStatus.INTERNAL_SERVER_ERROR;
+
       throw new HttpException(errorMessage, errorStatus);
     }
   }
