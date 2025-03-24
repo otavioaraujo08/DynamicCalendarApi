@@ -24,6 +24,13 @@ export class AuthController {
   @Get('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
     try {
+      if (!loginUserDto.username || !loginUserDto.password) {
+        throw new HttpException(
+          'Username and password are required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       return await this.authService.login(loginUserDto);
     } catch (error: unknown) {
       const errorMessage =
