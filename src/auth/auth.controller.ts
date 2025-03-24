@@ -4,12 +4,15 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
+  Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserInfosDto } from './dto/update-user-infos.dto';
 import { User } from './schema/user.schema';
 
 @ApiTags('auth')
@@ -60,6 +63,37 @@ export class AuthController {
         );
       }
       return await this.authService.createUser(createUserDto);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus =
+        (error as { status?: number })?.status ||
+        HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new HttpException(errorMessage, errorStatus);
+    }
+  }
+
+  @ApiOperation({ summary: 'Update user information' })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully.',
+    type: User,
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiBody({ type: UpdateUserInfosDto })
+  @Put('update-infos/:id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserInfosDto,
+  ): Promise<User> {
+    try {
+      if (!updateUserDto.username || !updateUserDto.picture) {
+        throw new HttpException(
+          'Username and Picture is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      return this.authService.updateUserInfos(id, updateUserDto);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unexpected error occurred';
