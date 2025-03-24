@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 @Schema()
 export class User {
-  @Prop({ default: mongoose.mongo.ObjectId })
+  @Prop({ default: () => new mongoose.Types.ObjectId() })
   id: string;
 
   @Prop({ required: true })
