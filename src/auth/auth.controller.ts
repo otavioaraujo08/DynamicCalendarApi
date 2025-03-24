@@ -87,7 +87,7 @@ export class AuthController {
     @Body() updateUserDto: UpdateUserInfosDto,
   ): Promise<User> {
     try {
-      if (!updateUserDto.username || !updateUserDto.picture) {
+      if (!updateUserDto.userName || !updateUserDto.picture) {
         throw new HttpException(
           'userName and Picture is required',
           HttpStatus.BAD_REQUEST,
