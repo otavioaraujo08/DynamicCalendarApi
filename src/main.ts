@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Dynamic Calendar API')
     .setDescription('This is a simple API for managing dynamic calendars.')
