@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -21,30 +21,30 @@ export class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async login(loginUserDto: LoginUserDto): Promise<User> {
-    const { username, password } = loginUserDto;
-    const user = await this.userModel.findOne({ username, password }).exec();
+    const { userName, password } = loginUserDto;
+    const user = await this.userModel.findOne({ userName, password }).exec();
     if (!user) {
       this.logger.error(
         chalk.red(
-          `Login failed for user: ${username} at ${new Date().toISOString()}`,
+          `Login failed for user: ${userName} at ${new Date().toISOString()}`,
         ),
       );
       throw new NotFoundException('User not found or incorrect password');
     }
     this.logger.log(
-      chalk.green(`User logged in: ${username} at ${new Date().toISOString()}`),
+      chalk.green(`User logged in: ${userName} at ${new Date().toISOString()}`),
     );
     return user;
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.userModel
-      .findOne({ nome: createUserDto.username })
+      .findOne({ nome: createUserDto.userName })
       .exec();
     if (existingUser) {
       this.logger.error(
         chalk.yellow(
-          `User creation failed: ${createUserDto.username} already exists at ${new Date().toISOString()}`,
+          `User creation failed: ${createUserDto.userName} already exists at ${new Date().toISOString()}`,
         ),
       );
       throw new BadRequestException('User already exists');
@@ -52,7 +52,7 @@ export class AuthService {
     const createdUser = new this.userModel(createUserDto);
     this.logger.log(
       chalk.blue(
-        `User created: ${createUserDto.username} at ${new Date().toISOString()}`,
+        `User created: ${createUserDto.userName} at ${new Date().toISOString()}`,
       ),
     );
     return createdUser.save();

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -27,10 +26,10 @@ export class AuthController {
     status: 404,
     description: 'User not found or incorrect password.',
   })
-  @Get('login')
+  @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
     try {
-      if (!loginUserDto.username || !loginUserDto.password) {
+      if (!loginUserDto.userName || !loginUserDto.password) {
         throw new HttpException(
           'Username and password are required',
           HttpStatus.BAD_REQUEST,
@@ -57,7 +56,7 @@ export class AuthController {
   @Post('create-user')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     try {
-      if (!createUserDto.username || !createUserDto.password) {
+      if (!createUserDto.userName || !createUserDto.password) {
         throw new HttpException(
           'Username and password are required',
           HttpStatus.BAD_REQUEST,
