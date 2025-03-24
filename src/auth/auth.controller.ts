@@ -17,6 +17,10 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'User logged in' })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found or incorrect password.',
+  })
   @Get('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
     try {
