@@ -31,7 +31,7 @@ export class AuthController {
     try {
       if (!loginUserDto.userName || !loginUserDto.password) {
         throw new HttpException(
-          'Username and password are required',
+          'userName and password are required',
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -58,7 +58,7 @@ export class AuthController {
     try {
       if (!createUserDto.userName || !createUserDto.password) {
         throw new HttpException(
-          'Username and password are required',
+          'userName and password are required',
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -89,7 +89,7 @@ export class AuthController {
     try {
       if (!updateUserDto.username || !updateUserDto.picture) {
         throw new HttpException(
-          'Username and Picture is required',
+          'userName and Picture is required',
           HttpStatus.BAD_REQUEST,
         );
       }
