@@ -37,6 +37,25 @@ export class AuthService {
     return user;
   }
 
+  async findUserById(id: string): Promise<User> {
+    this.logger.log(
+      chalk.blue(`Finding user with ID: ${id} at ${new Date().toISOString()}`),
+    );
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      this.logger.error(
+        chalk.red(
+          `User not found with ID: ${id} at ${new Date().toISOString()}`,
+        ),
+      );
+      throw new NotFoundException('User not found');
+    }
+    this.logger.log(
+      chalk.blue(`User found with ID: ${id} at ${new Date().toISOString()}`),
+    );
+    return user;
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.userModel
       .findOne({ nome: createUserDto.userName })
