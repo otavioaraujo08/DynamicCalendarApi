@@ -10,7 +10,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Dynamic Calendar API')
     .setDescription('This is a simple API for managing dynamic calendars.')
-    .setVersion('1.0')
+    .setVersion('1.1')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, documentFactory);
