@@ -14,12 +14,32 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserInfosDto } from './dto/update-user-infos.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from './schema/user.schema';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @ApiOperation({ summary: 'Get Users' })
+  @ApiResponse({ status: 200, description: 'User found.', type: [UserDto] })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @Get('users')
+  async getUsers(): Promise<UserDto[]> {
+    try {
+      return (await this.authService.getAllUsers()).filter(
+        (user): user is UserDto => user !== undefined,
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus =
+        (error as { status?: number })?.status ||
+        HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new HttpException(errorMessage, errorStatus);
+    }
+  }
 
   @ApiOperation({ summary: 'Get User by ID' })
   @ApiResponse({ status: 200, description: 'User found.', type: User })
