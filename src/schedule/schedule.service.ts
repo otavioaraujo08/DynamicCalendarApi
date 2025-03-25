@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { ScheduleDto } from './dto/schedule.dto';
@@ -42,6 +42,10 @@ export class ScheduleService {
   async createSchedule(schedule: CreateScheduleDto): Promise<Schedule> {
     this.logger.log('Creating schedule');
 
+    console.log('-X-X-X-X-X-X-X-X-X-X');
+    console.log(schedule);
+    console.log('-X-X-X-X-X-X-X-X-X-X');
+
     const requiredFields = [
       'date',
       'startTime',
@@ -52,11 +56,19 @@ export class ScheduleService {
       'createdBy',
     ];
     for (const field of requiredFields) {
-      if (!CreateScheduleDto[field]) {
+      if (!schedule[field]) {
         this.logger.error(`Missing required field: ${field}`);
         throw new BadRequestException(`Missing required field: ${field}`);
       }
     }
+
+    if (!Types.ObjectId.isValid(schedule.createdBy)) {
+      this.logger.error(
+        `Invalid ObjectId for createdBy: ${schedule.createdBy}`,
+      );
+      throw new BadRequestException(`Invalid ObjectId for createdBy`);
+    }
+
     const userExists = await this.authService.findUserById(schedule.createdBy);
     if (!userExists) {
       this.logger.error(`User with id: ${schedule.createdBy} not found`);
