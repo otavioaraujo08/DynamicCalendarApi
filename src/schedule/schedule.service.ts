@@ -23,9 +23,33 @@ export class ScheduleService {
 
   async getAllSchedules(): Promise<ScheduleDto[]> {
     this.logger.log('Getting all schedules');
+
     const schedules = await this.scheduleModel.find().exec();
     this.logger.log(`Found ${schedules.length} schedules`);
-    return schedules;
+
+    const users = await this.authService.getAllUsers();
+    const schedulesFormated = schedules.map((schedule) => {
+      const createdBy = users.find((user) => user?._id === schedule.createdBy);
+      const updatedBy = users.find((user) => user?._id === schedule.updatedBy);
+      return {
+        ...schedule.toObject(),
+        createdBy: createdBy
+          ? {
+              username: createdBy.username,
+              _id: createdBy._id,
+              picture: createdBy?.picture,
+            }
+          : String(schedule._id),
+        updatedBy: updatedBy
+          ? {
+              username: updatedBy.username,
+              _id: updatedBy._id || '',
+              picture: updatedBy?.picture,
+            }
+          : String(schedule._id),
+      };
+    });
+    return schedulesFormated;
   }
 
   async getScheduleById(id: string): Promise<ScheduleDto | null> {
@@ -36,7 +60,26 @@ export class ScheduleService {
       return null;
     }
     this.logger.log(`Found schedule with id: ${id}`);
-    return schedule;
+    const users = await this.authService.getAllUsers();
+    const createdBy = users.find((user) => user?._id === schedule.createdBy);
+    const updatedBy = users.find((user) => user?._id === schedule.updatedBy);
+    return {
+      ...schedule.toObject(),
+      createdBy: createdBy
+        ? {
+            username: createdBy?.username || '',
+            _id: createdBy?._id || '',
+            picture: createdBy?.picture || '',
+          }
+        : schedule.createdBy,
+      updatedBy: updatedBy
+        ? {
+            username: updatedBy?.username || '',
+            _id: updatedBy?._id || '',
+            picture: updatedBy?.picture || '',
+          }
+        : schedule.updatedBy,
+    };
   }
 
   async createSchedule(schedule: CreateScheduleDto): Promise<Schedule> {
