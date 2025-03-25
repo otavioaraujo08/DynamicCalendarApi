@@ -77,7 +77,10 @@ export class ScheduleService {
       );
     }
 
-    const createdSchedule = new this.scheduleModel(schedule);
+    const createdSchedule = new this.scheduleModel({
+      ...schedule,
+      createdAt: new Date(),
+    });
     this.logger.log(`Schedule created: ${schedule.title}`);
     return createdSchedule.save();
   }
@@ -95,7 +98,6 @@ export class ScheduleService {
       'dayOfTheWeek',
       'title',
       'description',
-      'createdBy',
       'updatedBy',
     ];
     for (const field of requiredFields) {
@@ -121,7 +123,11 @@ export class ScheduleService {
     }
 
     const updatedSchedule = await this.scheduleModel
-      .findByIdAndUpdate(id, schedule, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { ...schedule, updatedAt: new Date() },
+        { new: true },
+      )
       .exec();
     if (!updatedSchedule) {
       this.logger.error(`Schedule with id: ${id} not found`);
