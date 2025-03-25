@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -19,6 +20,23 @@ import { User } from './schema/user.schema';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @ApiOperation({ summary: 'Get User by ID' })
+  @ApiResponse({ status: 200, description: 'User found.', type: User })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @Get('user/:id')
+  async getUserById(@Param('id') id: string): Promise<User> {
+    try {
+      return await this.authService.findUserById(id);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus =
+        (error as { status?: number })?.status ||
+        HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new HttpException(errorMessage, errorStatus);
+    }
+  }
 
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'User logged in' })
