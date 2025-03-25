@@ -15,7 +15,7 @@ export class ScheduleDto {
   @ApiProperty()
   readonly description: string;
   @ApiProperty()
-  readonly createdBy: UserDto | null;
+  readonly createdBy: UserDto | string | null;
   @ApiProperty()
-  readonly updatedBy: UserDto | null;
+  readonly updatedBy: UserDto | string | null;
 }
