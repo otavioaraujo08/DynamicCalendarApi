@@ -1,11 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
 
 @Schema()
 export class User {
-  @Prop({ default: () => new mongoose.Types.ObjectId() })
-  id: string;
-
   @Prop({ required: true })
   userName: string;
 
