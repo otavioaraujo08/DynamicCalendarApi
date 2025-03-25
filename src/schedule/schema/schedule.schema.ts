@@ -29,6 +29,12 @@ export class Schedule {
 
   @Prop({})
   updatedBy: string;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 }
 
 export type ScheduleDocument = Schedule & Document;

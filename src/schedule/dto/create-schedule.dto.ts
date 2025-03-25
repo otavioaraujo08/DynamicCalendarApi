@@ -15,4 +15,6 @@ export class CreateScheduleDto {
   readonly description: string;
   @ApiProperty()
   readonly createdBy: string;
+  @ApiProperty()
+  readonly createdAt: string;
 }
