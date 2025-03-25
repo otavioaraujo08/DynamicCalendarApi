@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserInfosDto } from './dto/update-user-infos.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UserDto } from './dto/user.dto';
 import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
@@ -35,6 +36,20 @@ export class AuthService {
       chalk.green(`User logged in: ${userName} at ${new Date().toISOString()}`),
     );
     return user;
+  }
+
+  async getAllUsers(): Promise<Partial<UserDto[]>> {
+    this.logger.log(
+      chalk.blue(`Getting all users at ${new Date().toISOString()}`),
+    );
+    const users = (await this.userModel.find().exec()).map((user) => {
+      const { _id, userName, picture } = user;
+      return { _id: _id.toString(), username: userName, picture };
+    });
+    this.logger.log(
+      chalk.blue(`Found ${users.length} users at ${new Date().toISOString()}`),
+    );
+    return users;
   }
 
   async findUserById(id: string): Promise<User> {
