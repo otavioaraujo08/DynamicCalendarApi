@@ -105,6 +105,13 @@ export class ScheduleService {
       }
     }
 
+    if (!Types.ObjectId.isValid(schedule.updatedBy)) {
+      this.logger.error(
+        `Invalid ObjectId for updatedBy: ${schedule.updatedBy}`,
+      );
+      throw new BadRequestException(`Invalid ObjectId for updatedBy`);
+    }
+
     const userExists = await this.authService.findUserById(schedule.updatedBy);
     if (!userExists) {
       this.logger.error(`User with id: ${schedule.updatedBy} not found`);
