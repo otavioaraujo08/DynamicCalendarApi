@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserDto } from 'src/auth/dto/user.dto';
 
 export class ScheduleDto {
   @ApiProperty()
@@ -14,7 +15,7 @@ export class ScheduleDto {
   @ApiProperty()
   readonly description: string;
   @ApiProperty()
-  readonly createdBy: string;
+  readonly createdBy: UserDto | null;
   @ApiProperty()
-  readonly updatedBy: string;
+  readonly updatedBy: UserDto | null;
 }
