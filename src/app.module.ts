@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { Schedule } from './schedule/schema/schedule.schema';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { Schedule } from './schedule/schema/schedule.schema';
       `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONG_PASSWORD}@dynamiccalendarcluster.d8fzz.mongodb.net/?retryWrites=true&w=majority&appName=DynamicCalendarCluster`,
     ),
     AuthModule,
-    Schedule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
