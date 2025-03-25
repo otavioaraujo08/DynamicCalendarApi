@@ -42,10 +42,6 @@ export class ScheduleService {
   async createSchedule(schedule: CreateScheduleDto): Promise<Schedule> {
     this.logger.log('Creating schedule');
 
-    console.log('-X-X-X-X-X-X-X-X-X-X');
-    console.log(schedule);
-    console.log('-X-X-X-X-X-X-X-X-X-X');
-
     const requiredFields = [
       'date',
       'startTime',
