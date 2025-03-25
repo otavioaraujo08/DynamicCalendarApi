@@ -99,7 +99,7 @@ export class ScheduleService {
       'updatedBy',
     ];
     for (const field of requiredFields) {
-      if (!CreateScheduleDto[field]) {
+      if (!schedule[field]) {
         this.logger.error(`Missing required field: ${field}`);
         throw new BadRequestException(`Missing required field: ${field}`);
       }
