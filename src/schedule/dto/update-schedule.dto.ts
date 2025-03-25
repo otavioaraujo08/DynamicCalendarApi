@@ -15,6 +15,4 @@ export class UpdateScheduleDto {
   readonly description: string;
   @ApiProperty()
   readonly updatedBy: string;
-  @ApiProperty()
-  readonly updatedAt: string;
 }
