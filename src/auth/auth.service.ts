@@ -73,7 +73,7 @@ export class AuthService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.userModel
-      .findOne({ nome: createUserDto.userName })
+      .findOne({ userName: createUserDto.userName })
       .exec();
     if (existingUser) {
       this.logger.error(
